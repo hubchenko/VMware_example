@@ -100,9 +100,7 @@ class ConfigureESXiNetwork():
         self.name = "configureesxinetwork.py" 
         self.prod_extended_networks = args.networks
         self.vswitch_name = args.vswtich
-        self.logfile_name = utils.get_logfile_name("update_barnics_esxi_" + self.region)
-        self.log = open(os.path.join(self.logdir, self.logfile_name), "a")
-
+ 
 
         try:
             self.vc_connection = vmware.VMWare(vc_userid=self.vc_userid, vc_passwd= self.vc_passwd, vc_fqdn= self.vc_fqdn) # Create a vcenter connection
@@ -172,7 +170,7 @@ class ConfigureESXiNetwork():
 
         except Exception as e:
             message = "Unable to configure vswtich on host {}: {}".format(hostname, e)
-            utils.log_message(message, self.log, "ERROR")
+            print(message)
 
     def delete_vswitch(self):
         vswitch_name=self.vswitch_name
@@ -187,7 +185,7 @@ class ConfigureESXiNetwork():
 
         except Exception as e:
             message = "Unable to remove vswtich on host {}: {}".format(hostname, e)
-            utils.log_message(message, self.log, "ERROR")
+            print(message)
 
 
     def assign_prod_portgroups(self):
@@ -202,15 +200,14 @@ class ConfigureESXiNetwork():
                     print(message)
                 except Exception as e:
                     message = "Unable to add vlan {}: {}".format(vlanid, e)
-                    utils.log_message(message, self.log, "ERROR")
+                    print(message)
         else:
             message = "Unable to find vswitch {}, check virtual center. Error thown: {}".format(vswitch_name, e)
-            utils.log_message(message, self.log, "ERROR")
+            print(message)
 
 
     
     def run(self):
-        utils.log_message("checking host {} in virtual center {}".format(self.hostname, self.vc_connection.vc_fqdn), self.log)
         if self.action == 'audit':
             message = "auditing host {} for a network profile".format(self.hostname)
             print(message)
